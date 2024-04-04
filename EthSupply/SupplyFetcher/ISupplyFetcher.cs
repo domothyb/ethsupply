@@ -2,5 +2,5 @@ namespace EthSupply;
 
 public interface ISupplyFetcher
 {
-    public Task<long> FetchSupply();
+    public Task<double> FetchSupply();
 }
