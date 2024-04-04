@@ -1,8 +1,17 @@
 ﻿namespace EthSupply.NotificationService;
 
-public class TelegramNotifier(string token, long channelId) : INotificationService
+public class TelegramNotifier : INotificationService
 {
-    public async Task Notify(string message)
+    private readonly string token;
+    private readonly long channelId;
+
+    public TelegramNotifier(string token, long channelId)
+    {
+        this.token = token;
+        this.channelId = channelId;
+    }
+
+    private async Task Notify(string message)
     {
         var data = new Dictionary<string, string>
         {
@@ -14,5 +23,15 @@ public class TelegramNotifier(string token, long channelId) : INotificationServi
         var content = new FormUrlEncodedContent(data);
         var response = await client.PostAsync($"https://api.telegram.org/bot{token}/sendMessage", content);
         response.EnsureSuccessStatusCode();
+    }
+
+    public void AlertIncrease(long supply)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void AlertDecrease(long supply)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -2,12 +2,14 @@ using Newtonsoft.Json;
 
 namespace EthSupply.SupplyFetcher
 {
-    public class SupplyFetcherImpl : ISupplyFetcher
+    public class UltrasoundSupplyFetcher : ISupplyFetcher
     {
+        private const string ULTRA_SOUND_SUPPLY_API_URL = "https://ultrasound.money/api/v2/fees/supply-parts";
+
         public async Task<double> FetchSupply()
         {
             using HttpClient client = new HttpClient();
-            var response = await client.GetAsync("https://ultrasound.money/api/v2/fees/supply-parts");
+            var response = await client.GetAsync(ULTRA_SOUND_SUPPLY_API_URL);
             response.EnsureSuccessStatusCode();
             string responseBody = await response.Content.ReadAsStringAsync();
             var data = JsonConvert.DeserializeObject<SupplyParts>(responseBody);

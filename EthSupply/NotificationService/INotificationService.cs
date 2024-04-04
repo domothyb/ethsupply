@@ -2,5 +2,7 @@
 
 public interface INotificationService
 {
-    public Task Notify(string message);
+    public void AlertIncrease(long supply);
+
+    public void AlertDecrease(long supply);
 }
