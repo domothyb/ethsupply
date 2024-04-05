@@ -34,6 +34,12 @@ public class Program
         var lastSupplyAlert = dataRepository.GetLastSupplyAlert();
         var newSupplyAlert = RoundTo1000(currentSupply);
         
+        if (lastSupplyAlert == 0)
+        {
+            dataRepository.SetLastSupplyAlert(newSupplyAlert);
+            return;
+        }
+        
         if (newSupplyAlert == lastSupplyAlert)
             return;
 

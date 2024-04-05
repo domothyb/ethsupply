@@ -7,11 +7,11 @@ using NSubstitute;
 
 public class Tests
 {
-    private INotificationService notificationService;
-    private ISupplyService supplyService;
-    private IDataRepository dataRepository;
+    private INotificationService notificationService = null!;
+    private ISupplyService supplyService = null!;
+    private IDataRepository dataRepository = null!;
 
-    private Program program;
+    private Program program = null!;
     
     [SetUp]
     public void Setup()
@@ -117,12 +117,6 @@ public class Tests
         await program.Run();
         
         DidntAlert();
-    }
-
-    private async Task RunWithSupply(double supply)
-    {
-        CurrentSupplyIs(supply);
-        await program.Run();
     }
 
     private void AlertedDecrease(long supply)

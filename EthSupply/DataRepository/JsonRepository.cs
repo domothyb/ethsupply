@@ -11,8 +11,8 @@ public class JsonRepository : IDataRepository
     public JsonRepository(string dataFilePath)
     {
         var jsonContent = File.ReadAllText(dataFilePath);
+        dataObject = JsonConvert.DeserializeObject<DataObject>(jsonContent) ?? throw new InvalidOperationException();
         this.dataFilePath = dataFilePath;
-        this.dataObject = JsonConvert.DeserializeObject<DataObject>(jsonContent) ?? throw new InvalidOperationException();
     }
     
     public long GetLastSupplyAlert()

@@ -33,7 +33,7 @@ public class TelegramNotifier : INotificationService
             { "text", message }
         };
         
-        using HttpClient client = new HttpClient();
+        using var client = new HttpClient();
         var content = new FormUrlEncodedContent(data);
         var response = await client.PostAsync(url, content);
         response.EnsureSuccessStatusCode();
