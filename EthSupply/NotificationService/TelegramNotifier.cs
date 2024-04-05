@@ -1,14 +1,24 @@
-﻿namespace EthSupply.NotificationService;
+﻿using Newtonsoft.Json;
+
+namespace EthSupply.NotificationService;
 
 public class TelegramNotifier : INotificationService
 {
     private readonly string token;
     private readonly long channelId;
 
-    public TelegramNotifier(string token, long channelId)
+    private TelegramNotifier(string token, long channelId)
     {
         this.token = token;
         this.channelId = channelId;
+    }
+
+    public static TelegramNotifier Load(string dataFilePath)
+    {
+        var jsonContent = File.ReadAllText(dataFilePath);
+        var credentials = JsonConvert.DeserializeObject<TelegramCredentials>(jsonContent) ?? throw new InvalidOperationException();
+
+        return new TelegramNotifier(credentials.Token, credentials.ChannelId);
     }
 
     private async Task Notify(string message)
@@ -25,13 +35,13 @@ public class TelegramNotifier : INotificationService
         response.EnsureSuccessStatusCode();
     }
 
-    public void AlertIncrease(long supply)
+    public async Task AlertIncrease(long supply)
     {
-        throw new NotImplementedException();
+        await Notify("Hello up");
     }
 
-    public void AlertDecrease(long supply)
+    public async Task AlertDecrease(long supply)
     {
-        throw new NotImplementedException();
+        await Notify("Hello down");
     }
 }

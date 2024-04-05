@@ -2,10 +2,8 @@
 
 public interface IDataRepository
 {
-    string GetBotToken();
-    long GetChannelId();
-    double GetLastSupplyAlert();
+    long GetLastSupplyAlert();
     double GetLastSupplySeen();
-    void SetLastSupplyAlert(double supply);
+    void SetLastSupplyAlert(long supply);
     void SetLastSupplySeen(double supply);
 }

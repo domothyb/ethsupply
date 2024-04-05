@@ -14,18 +14,8 @@ public class JsonRepository : IDataRepository
         this.dataFilePath = dataFilePath;
         this.dataObject = JsonConvert.DeserializeObject<DataObject>(jsonContent) ?? throw new InvalidOperationException();
     }
-
-    public string GetBotToken()
-    {
-        return dataObject.Token;
-    }
-
-    public long GetChannelId()
-    {
-        return dataObject.ChannelId;
-    }
-
-    public double GetLastSupplyAlert()
+    
+    public long GetLastSupplyAlert()
     {
         return dataObject.LastSupplyAlert;
     }
@@ -35,7 +25,7 @@ public class JsonRepository : IDataRepository
         return dataObject.LastSupplySeen;
     }
 
-    public void SetLastSupplyAlert(double supply)
+    public void SetLastSupplyAlert(long supply)
     {
         dataObject.LastSupplyAlert = supply;
         Save();

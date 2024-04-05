@@ -1,35 +1,41 @@
-﻿using EthSupply.DataRepository;
+﻿using System.Globalization;
+using EthSupply.DataRepository;
 using EthSupply.NotificationService;
-using EthSupply.SupplyFetcher;
+using EthSupply.SupplyService;
+using Newtonsoft.Json;
 
 namespace EthSupply;
 
-public class Program
+public partial class Program
 {
     private readonly INotificationService notificationService;
-    private readonly ISupplyFetcher supplyFetcher;
     private readonly IDataRepository dataRepository;
+    private readonly ISupplyService supplyService;
 
-    public Program(INotificationService notificationService, ISupplyFetcher supplyFetcher, IDataRepository dataRepository)
+    public Program(INotificationService notificationService, ISupplyService supplyService, IDataRepository dataRepository)
     {
         this.notificationService = notificationService;
-        this.supplyFetcher = supplyFetcher;
+        this.supplyService = supplyService;
         this.dataRepository = dataRepository;
     }
-
+    
     public async Task Run()
     {
-        // Todo
+        var currentSupply = await supplyService.FetchSupply();
+        var lastSupplyAlert = dataRepository.GetLastSupplyAlert();
+        var lastSupplySeen = dataRepository.GetLastSupplySeen();
+        dataRepository.SetLastSupplySeen(currentSupply);
     }
-
+    
     public static async Task Main(string[] args)
     {
         var dataFilePath = args[0];
+        
         var dataRepository = new JsonRepository(dataFilePath);
-        var notificationService = new TelegramNotifier(dataRepository.GetBotToken(), dataRepository.GetChannelId());
-        var supplyFetcher = new UltrasoundSupplyFetcher();
-
-        var program = new Program(notificationService, supplyFetcher, dataRepository);
+        var notificationService = TelegramNotifier.Load(dataFilePath);
+        var supplyService = new UltraSoundSupplyService();
+        
+        var program = new Program(notificationService, supplyService, dataRepository);
         await program.Run();
     }
 }
