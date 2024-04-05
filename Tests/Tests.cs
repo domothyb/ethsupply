@@ -52,8 +52,8 @@ public class Tests
     [Test]
     public async Task Scenario1_WentDown_NotPastThreshold_NoAlert()
     {
-        CurrentSupplyIs(100_400_300);
         LastSupplySeenWas(100_400_305);
+        CurrentSupplyIs(100_400_300);
 
         await program.Run();
         
@@ -63,32 +63,54 @@ public class Tests
     [Test]
     public async Task Scenario2_WentDown_PastNewThreshold_ShoudAlertDown()
     {
-        CurrentSupplyIs(100_399_005);
         LastSupplySeenWas(100_400_005);
+        CurrentSupplyIs(100_399_995);
         LastSupplyAlertedWas(100_500_000);
 
         await program.Run();
         
-        AlertedDecrease(120_400_000);
+        AlertedDecrease(100_400_000);
     }
     
     [Test]
-    public async Task Scenario2_WentUp_PastNewThreshold_ShoudAlertUp()
+    public async Task Scenario3_WentUp_NotPastThreshold_NoAlert()
     {
+        LastSupplySeenWas(100_400_300);
+        CurrentSupplyIs(100_400_305);
+
+        await program.Run();
+        
+        DidntAlert();
+    }
+    
+    [Test]
+    public async Task Scenario4_WentUp_PastNewThreshold_ShoudAlertUp()
+    {
+        LastSupplySeenWas(100_399_995);
         CurrentSupplyIs(100_400_005);
-        LastSupplySeenWas(100_399_005);
         LastSupplyAlertedWas(100_300_000);
 
         await program.Run();
         
-        AlertedIncrease(120_400_000);
+        AlertedIncrease(100_400_000);
     }
     
     [Test]
-    public async Task Scenario2_WentUp_NotPastNewThreshold_ShoudNotAlert()
+    public async Task Scenario5_WentUp_SeenThreshold_ShoudNotAlert()
     {
+        LastSupplySeenWas(100_399_995);
         CurrentSupplyIs(100_400_005);
-        LastSupplySeenWas(100_399_005);
+        LastSupplyAlertedWas(100_400_000);
+
+        await program.Run();
+        
+        DidntAlert();
+    }
+    
+    public async Task Scenario6_WentDown_SeenThreshold_ShoudNotAlert()
+    {
+        LastSupplySeenWas(100_400_005);
+        CurrentSupplyIs(100_399_005);
         LastSupplyAlertedWas(100_400_000);
 
         await program.Run();

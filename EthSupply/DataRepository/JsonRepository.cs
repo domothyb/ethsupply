@@ -17,12 +17,12 @@ public class JsonRepository : IDataRepository
     
     public long GetLastSupplyAlert()
     {
-        return dataObject.LastSupplyAlert;
+        return dataObject.LastSupplyAlert ?? 0;
     }
 
     public double GetLastSupplySeen()
     {
-        return dataObject.LastSupplySeen;
+        return dataObject.LastSupplySeen ?? 0;
     }
 
     public void SetLastSupplyAlert(long supply)

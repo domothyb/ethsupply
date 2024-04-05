@@ -1,5 +1,5 @@
-# What
+# Ethereum Supply Alerter
 
-Relatively overengineered script to alert changes in ethereum's supply by increments of 1000 either up or down
+Somewhat overdesigned script to alert changes of ±1000 ETH in Ethereum's current supply
 
-Telegram bot running at `t.me/ethereumsupply`
+Telegram bot running at [@ethereumsupply](https://t.me/ethereumsupply)

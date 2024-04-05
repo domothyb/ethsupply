@@ -1,17 +1,19 @@
-﻿using System.Globalization;
-using EthSupply.DataRepository;
+﻿using EthSupply.DataRepository;
 using EthSupply.NotificationService;
 using EthSupply.SupplyService;
-using Newtonsoft.Json;
 
 namespace EthSupply;
 
-public partial class Program
+public class Program
 {
+    private static long RoundTo1000(double value) => (long)Math.Round(value / 1000) * 1000;
+    
     private readonly INotificationService notificationService;
     private readonly IDataRepository dataRepository;
     private readonly ISupplyService supplyService;
 
+    private double currentSupply;
+    
     public Program(INotificationService notificationService, ISupplyService supplyService, IDataRepository dataRepository)
     {
         this.notificationService = notificationService;
@@ -21,10 +23,38 @@ public partial class Program
     
     public async Task Run()
     {
-        var currentSupply = await supplyService.FetchSupply();
+        currentSupply = await supplyService.FetchSupply();
+
+        if (SupplyWentPastThreshold())
+            await NotifySupplyChange();
+    }
+
+    private async Task NotifySupplyChange()
+    {
         var lastSupplyAlert = dataRepository.GetLastSupplyAlert();
+        var newSupplyAlert = RoundTo1000(currentSupply);
+        
+        if (newSupplyAlert == lastSupplyAlert)
+            return;
+
+        if (newSupplyAlert < lastSupplyAlert)
+            await notificationService.AlertDecrease(newSupplyAlert);
+        if (newSupplyAlert > lastSupplyAlert)
+            await notificationService.AlertIncrease(newSupplyAlert);
+        
+        dataRepository.SetLastSupplyAlert(newSupplyAlert);
+    }
+
+    private bool SupplyWentPastThreshold()
+    {
+        var threshold = RoundTo1000(currentSupply);
         var lastSupplySeen = dataRepository.GetLastSupplySeen();
         dataRepository.SetLastSupplySeen(currentSupply);
+        
+        var min = Math.Min(currentSupply, lastSupplySeen);
+        var max = Math.Max(currentSupply, lastSupplySeen);
+
+        return (min < threshold && threshold < max);
     }
     
     public static async Task Main(string[] args)
@@ -33,7 +63,7 @@ public partial class Program
         
         var dataRepository = new JsonRepository(dataFilePath);
         var notificationService = TelegramNotifier.Load(dataFilePath);
-        var supplyService = new UltraSoundSupplyService();
+        var supplyService = new UltraSoundAPISupplyService();
         
         var program = new Program(notificationService, supplyService, dataRepository);
         await program.Run();

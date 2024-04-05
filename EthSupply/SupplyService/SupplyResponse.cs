@@ -5,14 +5,11 @@ namespace EthSupply.SupplyService;
 public class SupplyResponse
 {
     [JsonProperty("beaconBalancesSum")]
-    public string BeaconBalancesSum { get; set; }
+    public string BeaconBalancesSum { get; set; } = null!;
 
     [JsonProperty("beaconDepositsSum")]
-    public string BeaconDepositsSum { get; set; }
-
-    [JsonProperty("blockNumber")]
-    public int BlockNumber { get; set; }
+    public string BeaconDepositsSum { get; set; } = null!;
 
     [JsonProperty("ExecutionBalancesSum")]
-    public string ExecutionBalancesSum { get; set;  }
+    public string ExecutionBalancesSum { get; set;  } = null!;
 }
