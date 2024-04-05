@@ -1,18 +1,18 @@
 using EthSupply.DataRepository;
 using EthSupply.NotificationService;
 using EthSupply.SupplyService;
+using NSubstitute;
 
 namespace EthSupply;
-using NSubstitute;
 
 public class Tests
 {
+    private IDataRepository dataRepository = null!;
     private INotificationService notificationService = null!;
     private ISupplyService supplyService = null!;
-    private IDataRepository dataRepository = null!;
 
     private Program program = null!;
-    
+
     [SetUp]
     public void Setup()
     {
@@ -20,7 +20,7 @@ public class Tests
         dataRepository = Substitute.For<IDataRepository>();
         supplyService = Substitute.For<ISupplyService>();
         dataRepository.GetLastSupplyAlert().Returns(0);
-        
+
         program = new Program(notificationService, supplyService, dataRepository);
     }
 
@@ -56,10 +56,10 @@ public class Tests
         CurrentSupplyIs(100_400_300);
 
         await program.Run();
-        
+
         DidntAlert();
     }
-    
+
     [Test]
     public async Task Scenario2_WentDown_PastNewThreshold_ShoudAlertDown()
     {
@@ -68,10 +68,10 @@ public class Tests
         LastSupplyAlertedWas(100_500_000);
 
         await program.Run();
-        
+
         AlertedDecrease(100_400_000);
     }
-    
+
     [Test]
     public async Task Scenario3_WentUp_NotPastThreshold_ShouldNotAlert()
     {
@@ -79,10 +79,10 @@ public class Tests
         CurrentSupplyIs(100_400_305);
 
         await program.Run();
-        
+
         DidntAlert();
     }
-    
+
     [Test]
     public async Task Scenario4_WentUp_PastNewThreshold_ShoudAlertUp()
     {
@@ -91,10 +91,10 @@ public class Tests
         LastSupplyAlertedWas(100_300_000);
 
         await program.Run();
-        
+
         AlertedIncrease(100_400_000);
     }
-    
+
     [Test]
     public async Task Scenario5_WentUp_SeenThreshold_ShoudNotAlert()
     {
@@ -103,10 +103,10 @@ public class Tests
         LastSupplyAlertedWas(100_400_000);
 
         await program.Run();
-        
+
         DidntAlert();
     }
-    
+
     [Test]
     public async Task Scenario6_WentDown_SeenThreshold_ShoudNotAlert()
     {
@@ -115,7 +115,7 @@ public class Tests
         LastSupplyAlertedWas(100_400_000);
 
         await program.Run();
-        
+
         DidntAlert();
     }
 
@@ -128,12 +128,12 @@ public class Tests
     {
         notificationService.Received().AlertIncrease(supply);
     }
-    
+
     private void LastSupplySeenWas(double supply)
     {
         dataRepository.GetLastSupplySeen().Returns(supply);
     }
-    
+
     private void LastSupplyAlertedWas(long supply)
     {
         dataRepository.GetLastSupplyAlert().Returns(supply);

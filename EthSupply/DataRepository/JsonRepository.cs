@@ -7,14 +7,14 @@ public class JsonRepository : IDataRepository
 {
     private readonly string dataFilePath;
     private readonly DataObject dataObject;
-    
+
     public JsonRepository(string dataFilePath)
     {
         var jsonContent = File.ReadAllText(dataFilePath);
         dataObject = JsonConvert.DeserializeObject<DataObject>(jsonContent) ?? throw new InvalidOperationException();
         this.dataFilePath = dataFilePath;
     }
-    
+
     public long GetLastSupplyAlert()
     {
         return dataObject.LastSupplyAlert ?? 0;
@@ -41,13 +41,13 @@ public class JsonRepository : IDataRepository
     {
         var globalJson = JObject.Parse(File.ReadAllText(dataFilePath));
         var dataJObject = JObject.FromObject(dataObject);
-        
+
         globalJson.Merge(dataJObject, new JsonMergeSettings
         {
             MergeArrayHandling = MergeArrayHandling.Union,
             MergeNullValueHandling = MergeNullValueHandling.Ignore
         });
-        
+
         var jsonData = globalJson.ToString(Formatting.Indented);
         File.WriteAllText(dataFilePath, jsonData);
     }

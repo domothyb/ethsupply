@@ -5,7 +5,7 @@ namespace EthSupply.SupplyService;
 public class UltraSoundAPISupplyService : ISupplyService
 {
     private const string ULTRA_SOUND_SUPPLY_API_URL = "https://ultrasound.money/api/v2/fees/supply-parts";
-    
+
     public async Task<double> FetchSupply()
     {
         using var client = new HttpClient();
