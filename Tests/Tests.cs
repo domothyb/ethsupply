@@ -50,7 +50,7 @@ public class Tests
     }
 
     [Test]
-    public async Task Scenario1_WentDown_NotPastThreshold_NoAlert()
+    public async Task Scenario1_WentDown_NotPastThreshold_ShouldNotAlert()
     {
         LastSupplySeenWas(100_400_305);
         CurrentSupplyIs(100_400_300);
@@ -73,7 +73,7 @@ public class Tests
     }
     
     [Test]
-    public async Task Scenario3_WentUp_NotPastThreshold_NoAlert()
+    public async Task Scenario3_WentUp_NotPastThreshold_ShouldNotAlert()
     {
         LastSupplySeenWas(100_400_300);
         CurrentSupplyIs(100_400_305);
@@ -107,6 +107,7 @@ public class Tests
         DidntAlert();
     }
     
+    [Test]
     public async Task Scenario6_WentDown_SeenThreshold_ShoudNotAlert()
     {
         LastSupplySeenWas(100_400_005);
