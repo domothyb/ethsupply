@@ -1,12 +1,12 @@
-﻿using System.Xml.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EthSupply.DataRepository;
 
 public class JsonRepository : IDataRepository
 {
-    private string dataFilePath;
-    private DataObject dataObject;
+    private readonly string dataFilePath;
+    private readonly DataObject dataObject;
     
     public JsonRepository(string dataFilePath)
     {
@@ -39,7 +39,16 @@ public class JsonRepository : IDataRepository
 
     private void Save()
     {
-        string jsonData = JsonConvert.SerializeObject(dataObject, Formatting.Indented);
+        var globalJson = JObject.Parse(File.ReadAllText(dataFilePath));
+        var dataJObject = JObject.FromObject(dataObject);
+        
+        globalJson.Merge(dataJObject, new JsonMergeSettings
+        {
+            MergeArrayHandling = MergeArrayHandling.Union,
+            MergeNullValueHandling = MergeNullValueHandling.Ignore
+        });
+        
+        var jsonData = globalJson.ToString(Formatting.Indented);
         File.WriteAllText(dataFilePath, jsonData);
     }
 }

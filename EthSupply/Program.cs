@@ -54,7 +54,7 @@ public class Program
         var min = Math.Min(currentSupply, lastSupplySeen);
         var max = Math.Max(currentSupply, lastSupplySeen);
 
-        return (min < threshold && threshold < max);
+        return min < threshold && threshold < max;
     }
     
     public static async Task Main(string[] args)
